@@ -1,0 +1,39 @@
+{
+	directHosts = [
+		{
+			host = "http://ad.doubleclick.net",
+			formats = [
+				{ 
+					format = "adx",
+					sites = [
+						{ 
+							siteName = "rogers.testsite", 
+							zones = [ 
+								{ zoneName = "", sizes = [[9,9]] } 
+							]
+						},
+						{ 
+							siteName = "rogers.chfi", 
+							zones = [ 
+								{ zoneName = "", sizes = [[300,60], [300,250], [728,90]], keyValuePairs = [] } 
+							]
+						}
+					],
+				}
+			]
+		}
+	],
+	proxyHosts = [
+		{
+			host = "http://www.680news.mobi",
+			sites = [
+				{ 
+					siteName = "WebService/GetAd.ashx",
+					version = "2",
+					devices = ["bb8100","bb8300","bb9000","iphone"], 
+					keyValuePairs = []
+				}
+			]
+		}
+	]
+}

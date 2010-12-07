@@ -1,6 +1,7 @@
 package com.rdm.AdTester;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -28,29 +29,41 @@ public class AdTesterServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Print out contents of JSON file
-		FileReader fileReader = null;
-		BufferedReader bufferedReader = null;
-		StringBuffer stringBuffer = new StringBuffer();
+		FileInputStream fileInputStream = null;
 		
 		try {
-			fileReader = new FileReader("/Projects/AdTesterServer/conf/AdTester-PredefinedAdList.txt");
-			bufferedReader = new BufferedReader(fileReader);
+			String requestedFile = request.getParameter("file");
+			String physicalFile = "/Projects/AdTesterServer/conf/AdTester-PredefinedAdList.txt";
 			
-			String line = null;
-			
-			while ( (line = bufferedReader.readLine()) != null ) {
-				stringBuffer.append(line);
+			if ( requestedFile != null ) {
+				if ( requestedFile.equalsIgnoreCase("citytv.xml") ) {
+					physicalFile = "/Projects/Citytv.xml";
+				} else if ( requestedFile.equalsIgnoreCase("schedule1.json") ) {
+					physicalFile = "/Projects/citytv_primetime_ipad/schedule1.json";
+				} else if ( requestedFile.equalsIgnoreCase("schedule2.json") ) {
+					physicalFile = "/Projects/citytv_primetime_ipad/schedule2.json";
+				}
 			}
 			
-			response.getWriter().write(stringBuffer.toString());
+			int currentOffset = 0;
+			int bufferSize = 0;
+			byte[] buffer = new byte[1024];
+			
+			fileInputStream = new FileInputStream(physicalFile);
+			
+			while ( (bufferSize = fileInputStream.read(buffer, 0, 1024)) > 0 ) {
+				response.getOutputStream().write(buffer, 0, bufferSize);
+				currentOffset += bufferSize;
+			}
+			response.addHeader("Content-Type", "text/plain");
+			response.setContentLength(currentOffset);
 		} catch ( Exception e ) {
-			if ( fileReader != null ) {
-				fileReader.close();
+			
+		} finally {
+			if ( fileInputStream != null ) {
+				fileInputStream.close();
 			}
-			if ( bufferedReader != null ) {
-				bufferedReader.close();
-			}
-		}	
+		}
 	}
 
 	/**
